@@ -14,6 +14,39 @@ defmodule OpenaiPlaygroundWeb.AnswerLive do
     {:ok, socket}
   end
 
+  defp stream_response(stream) do
+    target = self()
+
+    Task.Supervisor.async(StreamingText.TaskSupervisor, fn ->
+      for chunk <- stream, into: <<>> do
+        send(target, {:render_response_chunk, chunk})
+        chunk
+      end
+    end)
+  end
+
+  @impl true
+  def handle_event("answer_question", %{"question" => %{"question" => question}}, socket) do
+    prompt = prompt(question)
+    stream = OpenaiPlayground.OpenAI.stream(prompt)
+
+    socket =
+      socket
+      |> assign(:question, question)
+      |> assign(:state, :answering_question)
+      |> assign(:response_task, stream_response(stream))
+
+    {:noreply, socket}
+  end
+
+  defp prompt(question) do
+    """
+    Answer the following question.
+    Question: #{question}
+    Answer:
+    """
+  end
+
   @impl true
   def render(assigns) do
     ~H"""

@@ -16,6 +16,8 @@ defmodule OpenaiPlayground.Application do
       {Phoenix.PubSub, name: OpenaiPlayground.PubSub},
       # Start Finch
       {Finch, name: OpenaiPlayground.Finch},
+      {Task.Supervisor, name: OpenaiPlayground.TaskSupervisor},
+
       # Start the Endpoint (http/https)
       OpenaiPlaygroundWeb.Endpoint
       # Start a worker by calling: OpenaiPlayground.Worker.start_link(arg)
