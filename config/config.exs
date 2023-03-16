@@ -27,7 +27,13 @@ config :openai_playground, OpenaiPlaygroundWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :openai_playground, OpenaiPlayground.Mailer, adapter: Swoosh.Adapters.Local
+# config :openai_playground, OpenaiPlayground.Mailer, adapter: Swoosh.Adapters.Local
+config :openai_playground, OpenaiPlayground.Mailer,
+  adapter: Swoosh.Adapters.SMTP,
+  relay: "127.0.0.1",
+  username: "",
+  password: "",
+  port: 1025
 
 # Configure esbuild (the version is required)
 config :esbuild,
